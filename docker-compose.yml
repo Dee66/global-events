@@ -5,6 +5,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./favicon.ico:/usr/share/nginx/html/favicon.ico:ro
     depends_on:
       - app
 
@@ -25,7 +26,6 @@ services:
       - postgres
       - mongo
       - cassandra
-      - nifi
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -85,6 +85,15 @@ services:
       - "9042:9042"
 
   nifi:
-    image: apache/nifi:latest
+    image: apache/nifi:1.21.0
     ports:
       - "8080:8080"
+    environment:
+      - NIFI_WEB_HTTP_PORT=8080
+      - NIFI_WEB_HTTPS_PORT=
+      - SINGLE_USER_CREDENTIALS_USERNAME=admin
+      - SINGLE_USER_CREDENTIALS_PASSWORD=adminadminadmin
+
+networks:
+  default:
+    driver: bridge
