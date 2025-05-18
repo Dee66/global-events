@@ -1,12 +1,22 @@
-import { IsString, IsObject, IsISO8601 } from 'class-validator';
+import { IsString, IsObject, IsOptional, IsISO8601 } from 'class-validator';
 
 export class KafkaMessageDto {
   @IsString()
-  key: string;
+  messageId: string;
+
+  @IsString()
+  source: string;
+
+  @IsString()
+  eventType: string;
 
   @IsObject()
-  value: any;
+  payload: any;
 
   @IsISO8601()
   timestamp: string;
+
+  @IsOptional()
+  @IsObject()
+  metadata?: Record<string, any>;
 }

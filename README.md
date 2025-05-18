@@ -8,15 +8,26 @@ The system is organized as a **monorepo** with a microservices-oriented architec
 
 ---
 
-## Features
+## Solution Highlights
 
-- **Multi-Source Event Ingestion:** Kafka, RabbitMQ, REST APIs, Apache NiFi (pluggable via strategy pattern)
-- **Data Processing:** Normalization, enrichment, schema versioning, RBAC/security filtering, correlation IDs
-- **Polyglot Storage:** Cassandra (write-optimized), PostgreSQL (structured reads), MongoDB/Elastic (search)
-- **Notification Service:** Real-time WebSocket, Email, and Mobile Push (strategy-based, filterable)
-- **User & Auth:** OAuth2/JWT, SSO (mock), RBAC (Admin, Curator, Viewer), NestJS guards/policies
-- **System Qualities:** Observability (logging, tracing, metrics), rate limiting, retry/DLQ, Redis caching
-- **DevOps Ready:** Dockerized, CI/CD pipeline, environment-based config, secrets abstraction
+- **Multi-Source Event Ingestion:**  
+  The ingestion microservice supports pluggable event sources using the strategy pattern. It can ingest events from Kafka (high-throughput, persistent streaming), RabbitMQ (transactional, flexible routing), REST APIs (ad-hoc/manual), and Apache NiFi (visual ETL/dataflow).  
+  **NiFi** is leveraged as a dataflow orchestrator, integrating with diverse external sources, transforming/enriching data, and routing events to Kafka or RabbitMQ. This decouples data acquisition from processing and enables rapid integration of new sources.
+
+- **Event-Driven, Decoupled Architecture:**  
+  Events are ingested via Kafka and RabbitMQ, allowing for scalable, reliable, and replayable pipelines. The ingestion service consumes from these brokers, validates and normalizes events, and forwards them for enrichment and storage.
+
+- **Normalization, Enrichment, and Polyglot Storage:**  
+  Events are normalized and enriched (e.g., geo-tagging, deduplication, schema versioning) before being stored in Cassandra (write-optimized), PostgreSQL (structured reads), and MongoDB/Elastic (search). Data replication and sync are managed via NiFi or a custom sync layer.
+
+- **Real-Time Notification Service:**  
+  Users receive notifications via WebSocket, Email, or Mobile Push, with delivery channels abstracted using the strategy pattern. Notification triggers are based on event arrival and user subscription filters.
+
+- **Security & Observability:**  
+  OAuth2/JWT authentication, RBAC, and NestJS guards/policies secure the system. Full observability is provided via structured logging, tracing, and Prometheus metrics. Rate limiting, retry logic, and DLQ ensure resilience.
+
+- **DevOps & Extensibility:**  
+  All services are Dockerized and orchestrated with Docker Compose for local development. CI/CD pipelines, environment-based config, and secrets abstraction are included. The architecture is designed for easy extension (new event sources, notification channels, storage backends).
 
 ---
 
@@ -90,7 +101,7 @@ global-events/
 
 - Node.js 18+
 - Docker (for local development)
-- (Optional) Local instances of Cassandra, PostgreSQL, MongoDB, Redis, Kafka, RabbitMQ
+- (Optional) Local instances of Cassandra, PostgreSQL, MongoDB, Redis, Kafka, RabbitMQ, NiFi
 
 ### Installation
 
@@ -153,17 +164,6 @@ README.md
 Shared DTOs and interfaces are copied or referenced as needed for clarity and separation.
 
 See each folder's README for more details on its responsibilities and how to run it.
-
----
-
-## Contributing
-
-1. Fork the repo and create a feature branch.
-2. Implement your feature/module following the interface contracts.
-3. Write tests for your code.
-4. Submit a pull request with a clear description.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
 
 ---
 

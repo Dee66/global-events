@@ -1,9 +1,14 @@
 Project Specification – Global Event Ingestion & Notification System
+
 🎯 Purpose
 Design and build a scalable, production-grade backend system using NestJS and modern cloud architecture principles to showcase senior-level capabilities. The system handles high-throughput ingestion of global event data, applies processing, and delivers filtered, real-time notifications to subscribed users.
 
+---
+
 🧱 Core Functional Requirements
+
 🧩 1. Event Ingestion System
+
 Accepts event data from multiple sources:
 
 - **Kafka:**  
@@ -13,7 +18,8 @@ Accepts event data from multiple sources:
   Provides flexible routing and transactional delivery for events that require guaranteed processing or complex routing logic. Ideal for handling user- or device-originated events, such as geolocation updates or personalized notifications.
 
 - **Apache NiFi:**  
-  Acts as a data flow orchestrator and ETL (Extract, Transform, Load) engine. Used to integrate with diverse external sources, transform and enrich incoming data, and route events to Kafka or RabbitMQ as appropriate.
+  Acts as a data flow orchestrator and ETL (Extract, Transform, Load) engine. Used to integrate with diverse external sources, transform and enrich incoming data, and route events to Kafka or RabbitMQ as appropriate.  
+  **Showcase Approach:** NiFi is configured to produce directly to Kafka topics and RabbitMQ queues, leveraging the existing ingestion pipeline and decoupling dataflow logic from application code. This demonstrates best-practice, event-driven integration and avoids unnecessary REST endpoints.
 
 - **REST API:**  
   Allows direct, ad-hoc event submission from partners, administrators, or custom integrations. Supports rapid prototyping and manual testing of the event pipeline.
@@ -24,13 +30,19 @@ Accepts event data from multiple sources:
 - The NestJS ingestion service pool implements a strategy-based OOP interface for each source type (Kafka, RabbitMQ, NiFi, REST), allowing easy plug-in of new sources and demonstrating clean, extensible architecture.
 - NGINX (or AWS ALB) load balances REST/NiFi traffic across horizontally-scalable ingestion services.
 
+---
+
 ⚙️ 2. Data Processing
+
 - Normalize and enrich events (e.g., geo-tagging, deduplication).
 - Implement schema versioning for forward/backward compatibility.
 - Apply RBAC and security filters before storage.
 - Add correlation IDs to events for full observability.
 
+---
+
 🛢️ 3. Storage System
+
 Write-heavy optimized:
 - Apache Cassandra as the primary write store.
 
@@ -41,7 +53,10 @@ Read-heavy optimized (sync from Cassandra):
 - Uses Apache NiFi or a custom sync layer for data replication.
 - Showcases normalization in PostgreSQL and denormalization in MongoDB/Elastic.
 
+---
+
 📤 4. Notification Service
+
 Real-time WebSocket support.
 
 Notification delivery via:
@@ -55,7 +70,10 @@ Notifications are triggered by:
 
 Use OOP/strategy pattern to abstract notification channels.
 
+---
+
 👥 5. User & Auth
+
 OAuth2 / JWT Authentication
 
 SSO support (e.g., Google, GitHub – mock acceptable)
@@ -64,7 +82,10 @@ RBAC:
 - Roles: Admin, Curator, Viewer
 - Permissions enforced via NestJS guards/policies
 
+---
+
 ⚡ System Qualities
+
 🧪 Observability & Debugging
 - Full request tracing with correlation IDs
 - Centralized structured logging (e.g., Winston + transport to AWS CloudWatch or ELK)
@@ -85,7 +106,10 @@ Redis:
 - Environment-based configuration (config module, .env)
 - Abstracted secret loading (e.g., AWS Parameter Store stub)
 
+---
+
 🚀 Deployment & Infrastructure
+
 🔧 Infrastructure
 - All services, including the NestJS app, Redis, Cassandra, PostgreSQL, MongoDB, RabbitMQ, Kafka, NiFi, and NGINX, will be containerized and orchestrated using Docker Compose for local development and testing.
 - NGINX will serve as a reverse proxy and load balancer in front of the NestJS application, handling SSL termination, routing, and basic rate limiting.
@@ -98,7 +122,10 @@ Redis:
 - Docker Compose will orchestrate the full stack, enabling local development and integration testing with all dependencies.
 - NGINX will be included as a service in the Docker Compose stack.
 
+---
+
 🧪 Simulation & Testing
+
 🧬 Load Simulation
 - Custom CLI/Kafka producer to simulate:
   - 100k–1M events/day
@@ -110,7 +137,10 @@ Redis:
 - E2E tests for ingestion-to-notification pipeline
 - Integration tests with mocked Kafka/Rabbit
 
+---
+
 🔓 Open-ended Extensibility
+
 Future/Optional Enhancements
 - UI for viewing subscriptions and logs (React/Angular)
 - Admin panel for RBAC and event rules
@@ -118,6 +148,8 @@ Future/Optional Enhancements
 - ML layer for event classification or anomaly detection
 - Multi-tenant mode
 - Multi-region support (Geo-sharding)
+
+---
 
 🗺️ Architecture Diagram (Refined Summary)
          +------------------+         +------------------+
@@ -154,14 +186,21 @@ Future/Optional Enhancements
 
   Users → Subscriptions → Notification Service → WebSocket / Email / Mobile
                           (Strategy pattern based channels)
+
+---
+
 ✅ What This Project Demonstrates
-Skill	How It’s Shown
-NestJS Mastery	Modules, DI, Guards, Filters, Interceptors, Testing
-OOP & SOLID	Pluggable strategies (input, notification), clean layering
-Architecture	Async pipelines, polyglot persistence, load balancing
-DevOps	Docker, GitHub Actions, AWS usage
-System Design	Event sourcing, high-throughput ingestion, denormalization
-Security	OAuth, RBAC, JWT, rate limiting
-Real-Time Systems	WebSockets + push notifications
-Scalability	Horizontal scaling, Cassandra, Redis, backpressure handling
-Professionalism	Logging, metrics, error handling, documentation
+
+Skill                | How It’s Shown
+---------------------|----------------------------------------------------------
+NestJS Mastery       | Modules, DI, Guards, Filters, Interceptors, Testing
+OOP & SOLID          | Pluggable strategies (input, notification), clean layering
+Architecture         | Async pipelines, polyglot persistence, load balancing
+DevOps               | Docker, GitHub Actions, AWS usage
+System Design        | Event sourcing, high-throughput ingestion, denormalization
+Security             | OAuth, RBAC, JWT, rate limiting
+Real-Time Systems    | WebSockets + push notifications
+Scalability          | Horizontal scaling, Cassandra, Redis, backpressure handling
+Professionalism      | Logging, metrics, error handling, documentation
+
+---
