@@ -1,0 +1,6 @@
+services:
+  app:
+    volumes:
+      - ./apps/core-api:/app
+      - /app/node_modules
+    command: npm run start:dev

@@ -1,0 +1,66 @@
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+build/
+**/dist/
+**/build/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Coverage
+coverage/
+.nyc_output/
+**/coverage/
+**/.nyc_output/
+
+# Environment variables
+.env
+.env.*
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/editor files
+.vscode/
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.swp
+
+# Misc
+*.tgz
+.next/
+out/
+.cache/
+tmp/
+temp/
+.temp
+.scrap.json
+scrap.json
+scrap.html
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
