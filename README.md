@@ -4,7 +4,7 @@
 
 This project is a scalable, production-grade backend system built with **NestJS** and modern cloud-native patterns. It demonstrates senior-level architecture and engineering practices for high-throughput event ingestion, processing, and real-time notification delivery.
 
-The system is designed for extensibility, modularity, and parallel developmentâ€”enabling teams to work independently on ingestion, processing, storage, notification, and user/auth modules.
+The system is organized as a **monorepo** with a microservices-oriented architecture. Each major domain (such as event ingestion, processing, storage, notification, and user/auth) is implemented as an independent service or module, enabling parallel development, independent deployment, and improved scalability.
 
 ---
 
@@ -22,6 +22,29 @@ The system is designed for extensibility, modularity, and parallel developmentâ€
 
 ## Architecture
 
+The system is organized as a **monorepo** containing multiple independently deployable services. Each service is responsible for a specific domain, and all services communicate via well-defined interfaces and messaging patterns.
+
+```
+global-events/
+  apps/
+    core-api/      # Main API, processing, notification, user, and other modules
+    ingestion/     # Dedicated microservice for event ingestion (Kafka, RabbitMQ, NiFi, REST)
+  libs/            # (optional) Shared libraries, DTOs, and interfaces
+  docker-compose.yml
+  nginx.conf
+```
+
+**Key Benefits:**
+- **Separation of Concerns:** Each microservice handles a distinct responsibility (e.g., ingestion, processing, notification).
+- **Scalability:** Services can be scaled independently based on workload.
+- **Parallel Development:** Teams can work on different services without blocking each other.
+- **Resilience:** Failures in one service do not bring down the entire system.
+- **Easier Testing & Deployment:** Each service can be tested and deployed independently.
+
+---
+
+## Architecture Diagram
+
 ```
                 +---------------------+         +---------------------+
                 |   External Sources  |         |   External Sources  |
@@ -36,7 +59,7 @@ The system is designed for extensibility, modularity, and parallel developmentâ€
                               +---------+---------+
                                         |
                         +---------------v---------------+
-                        |     Ingestion Service Pool    |
+                        |     Ingestion Microservice    |
                         | (NestJS, retry-aware, scaled) |
                         +---------------+---------------+
                                         |
@@ -72,19 +95,20 @@ The system is designed for extensibility, modularity, and parallel developmentâ€
 ### Installation
 
 ```bash
-git clone https://github.com/global-events.git
-cd nestjs-design-patterns-app
+git clone https://github.com/Dee66/global-events.git
+cd global-events
 npm install
 ```
 
 ### Running Locally
 
 ```bash
-# Start in development mode
+# Start in development mode (for a single service)
+cd apps/core-api
 npm run start
 
-# Or use Docker Compose (recommended for full stack)
-docker-compose up --build
+# Or use Docker Compose (recommended for full stack, including all microservices)
+docker compose up --build
 ```
 
 ### Configuration
@@ -97,35 +121,13 @@ docker-compose up --build
 ## Project Structure
 
 ```
-src/
-  app.controller.ts
-  app.module.ts
-  main.ts
-  @types/                # TypeScript type definitions
-  common/                # Shared utilities, guards, interceptors, decorators, interfaces
-    decorators/
-    filters/
-    guards/
-    interceptors/
-    interfaces/
-  config/                # Configuration and secrets abstraction
-  modules/               # All main features/domains as modules
-    auth/                # Authentication (OAuth2/JWT, SSO, guards)
-    cache/               # Redis caching
-    event/               # Event DTOs
-    ingestion/           # Event source connectors (Kafka, RabbitMQ, REST, NiFi)
-    messaging/           # Messaging integrations (Kafka, RabbitMQ, NiFi)
-    notification/        # WebSocket, Email, Push notification channels
-    observability/       # Logging, metrics, tracing
-    processing/          # Normalization, enrichment, schema versioning
-    rbac/                # Role-based access control logic
-    resilience/          # Rate limiting, retry, DLQ
-    secrets/             # Secrets management
-    security/            # Security guards, roles, protected controllers
-    storage/             # Cassandra, PostgreSQL, MongoDB/Elastic adapters
-    subscription/        # User subscriptions
-    users/               # User management, roles, profiles
-  test/                  # Tests
+apps/
+  core-api/         # Main API, processing, notification, user, and other modules
+  ingestion/        # Dedicated event ingestion microservice
+libs/               # (optional) Shared libraries, DTOs, and interfaces
+docker-compose.yml  # Orchestrates all services and dependencies
+nginx.conf          # NGINX reverse proxy configuration
+README.md
 ```
 
 ---
@@ -140,34 +142,12 @@ src/
 
 ---
 
-## Event Ingestion Technologies
+## Microservices in This Monorepo
 
-This project demonstrates integration with multiple industry-standard messaging and data flow platforms, each chosen for their unique strengths in a modern event-driven architecture:
-
-- **Kafka:**  
-  Serves as the primary high-throughput event backbone. Used for ingesting large volumes of external, real-time event data such as weather alerts, news, and public safety notifications. Kafka enables scalable, durable, and replayable event streaming.
-
-- **RabbitMQ:**  
-  Provides flexible routing and transactional delivery for events that require guaranteed processing or complex routing logic. Ideal for handling user- or device-originated events, such as geolocation updates or personalized notifications.
-
-- **Apache NiFi:**  
-  Acts as a data flow orchestrator and ETL (Extract, Transform, Load) engine. Used to integrate with diverse external sources, transform and enrich incoming data, and route events to Kafka or RabbitMQ as appropriate.
-
-- **REST API:**  
-  Allows direct, ad-hoc event submission from partners, administrators, or custom integrations. Supports rapid prototyping and manual testing of the event pipeline.
-
-Each technology is integrated using a pluggable, strategy-based approach, showcasing best practices in modularity, extensibility, and real-world system design.
-
----
-
-## Monorepo Structure & Microservices
-
-This repository contains multiple applications to demonstrate a real-world, microservices-based event-driven architecture:
-
-- **nestjs-design-patterns-app/**  
+- **core-api/**  
   The main NestJS application, containing API, processing, notification, user, and other modules.
 
-- **ingestion-service/**  
+- **ingestion/**  
   A dedicated NestJS microservice responsible for ingesting events from Kafka, RabbitMQ, NiFi, and REST. This service is independently deployable and horizontally scalable.
 
 Shared DTOs and interfaces are copied or referenced as needed for clarity and separation.
@@ -206,4 +186,3 @@ MIT
 ---
 
 *This README will be refined as the project evolves. For questions or suggestions, open an issue or contact the maintainers.*
-````
