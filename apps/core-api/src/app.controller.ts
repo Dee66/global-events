@@ -9,7 +9,7 @@ export class AppController {
       <html lang="en">
         <head>
           <meta charset="UTF-8" />
-          <title>Global Event Ingestion & Notification System</title>
+          <title>Global Events</title>
           <link rel="icon" type="image/x-icon" href="/favicon.ico">
           <style>
             body {
