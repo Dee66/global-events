@@ -9,7 +9,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint . --ext .ts",
-    "start:dev": "nodemon --watch src --exec ts-node -r tsconfig-paths/register src/main.ts"
+    "start:dev": "nodemon --legacy-watch --polling-interval 1000 --watch src --exec ts-node -r tsconfig-paths/register src/main.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.1",
